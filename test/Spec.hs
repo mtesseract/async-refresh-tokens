@@ -25,7 +25,7 @@ instance Exception Exn
 
 oneTimeRefresh :: IO ()
 oneTimeRefresh = runStderrLoggingT $ do
-  tokenFoo <- newTokenStore (Proxy :: Proxy 'TokenFoo)
+  tokenFoo <- newEmptyTokenStore (Proxy :: Proxy 'TokenFoo)
   let conf = defaultTokenConf
              & tokenConfAddRequest (RequestToken tokenFoo actionFoo)
   _ <- newTokenRefresher conf

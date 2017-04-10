@@ -12,8 +12,9 @@ import           Control.Lens
 
 -- | Produce default token configuration.
 defaultTokenConf :: TokenConf m
-defaultTokenConf = TokenConf { _tokenConfRefreshTimeFactor = defaultRefreshTimeFactor
-                             , _tokenConfRequests          = empty }
+defaultTokenConf =
+  TokenConf { _tokenConfRefreshFactor = defaultRefreshTimeFactor
+            , _tokenConfRequests      = empty }
 
 -- | By default, we start refreshing tokens after 80% of the
 -- "expires_in" time of a token has been elapsed.
@@ -24,10 +25,8 @@ defaultRefreshTimeFactor = 0.8
 -- closed interval [0, 1] by which an "expires_in" duration is to be
 -- scaled. See 'defaultRefreshTimeFactor'.
 tokenConfSetFactor :: Double -> TokenConf m -> TokenConf m
-tokenConfSetFactor = (Lens.refreshTimeFactor .~)
+tokenConfSetFactor = (Lens.refreshFactor .~)
 
 -- | Add a token request to the given token configuration.
-tokenConfAddRequest :: RequestToken m
-                    -> TokenConf m
-                    -> TokenConf m
+tokenConfAddRequest :: RequestToken m -> TokenConf m -> TokenConf m
 tokenConfAddRequest req = Lens.requests %~ (req :)

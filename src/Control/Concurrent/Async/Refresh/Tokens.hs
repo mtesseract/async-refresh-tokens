@@ -12,12 +12,13 @@ module Control.Concurrent.Async.Refresh.Tokens
   ( IsToken(..)
   , Token(..)
   , TokenRefresher
+  , tokenRefresherAsync
   , RequestToken(..)
   , RefreshResult(..)
   , TokenStore
   , TokenConf
   , newTokenRefresher
-  , newTokenStore
+  , newEmptyTokenStore
   , defaultTokenConf
   , tokenConfSetFactor
   , tokenConfAddRequest
@@ -33,28 +34,9 @@ import           Control.Lens
 import           Control.Monad.Logger
 import           Formatting
 
-spawnSingleTokenRefresher :: forall m.
-                             ( MonadIO m
-                             , MonadBaseControl IO m
-                             , MonadMask m
-                             , MonadLogger m
-                             , Forall (Pure m) )
-                          => RequestToken m -> m (Async ())
-spawnSingleTokenRefresher (RequestToken store action) = do
-  let conf = newAsyncRefreshConf action
-             & asyncRefreshConfSetCallback (tokenStoreCallback store)
-  asyncRefreshAsync <$> newAsyncRefresh conf
-
-tokenStoreCallback :: forall m t.
-                      (MonadIO m, IsToken t, MonadLogger m)
-                   => TokenStore t
-                   -> Either SomeException (RefreshResult (Token t)) -> m ()
-tokenStoreCallback _ (Left exn) =
-  logErrorN $ sformat ("Token refresh action failed: " % stext) (tshow exn)
-tokenStoreCallback store res@(Right t) = do
-  logDebugN $ sformat ("Token refresh action succeeded: " % stext) (tshow t)
-  atomically $ writeTVar store (refreshResult <$> res)
-
+-- | Start a new token refresher for the provided configuration.
+-- Returns a 'TokenRefresher' handle representing the running token
+-- refresher.
 newTokenRefresher :: forall m.
                      ( MonadIO m
                      , MonadBaseControl IO m
@@ -73,7 +55,37 @@ newTokenRefresher conf = do
           void $ waitAny asyncHandles
           logErrorN "Token Refresher terminated unexpectedly"
 
-newTokenStore :: (MonadIO m, IsToken t)
-              => proxy t -> m (TVar (Either SomeException (Token t)))
-newTokenStore _ = atomically $
+-- | Spawn an async refresher for the provided token.
+spawnSingleTokenRefresher :: forall m.
+                             ( MonadIO m
+                             , MonadBaseControl IO m
+                             , MonadMask m
+                             , MonadLogger m
+                             , Forall (Pure m) )
+                          => RequestToken m -> m (Async ())
+spawnSingleTokenRefresher (RequestToken store action) = do
+  let conf = newAsyncRefreshConf action
+             & asyncRefreshConfSetCallback (tokenStoreCallback store)
+  asyncRefreshAsync <$> newAsyncRefresh conf
+
+-- | Extract the 'Async' handle from the provided 'TokenRefresher'.
+tokenRefresherAsync :: TokenRefresher -> Async ()
+tokenRefresherAsync (TokenRefresher asyncHandle) = asyncHandle
+
+-- | Callback to be used by async-refresh package, which simply
+-- updates the provided token store.
+tokenStoreCallback :: forall m t.
+                      (MonadIO m, IsToken t, MonadLogger m)
+                   => TokenStore t
+                   -> Either SomeException (RefreshResult (Token t)) -> m ()
+tokenStoreCallback _ (Left exn) =
+  logErrorN $ sformat ("Token refresh action failed: " % stext) (tshow exn)
+tokenStoreCallback store res@(Right t) = do
+  logDebugN $ sformat ("Token refresh action succeeded: " % stext) (tshow t)
+  atomically $ writeTVar store (refreshResult <$> res)
+
+-- | Create a new empty token store for the provided token type.
+newEmptyTokenStore :: (MonadIO m, IsToken t)
+                   => proxy t -> m (TVar (Either SomeException (Token t)))
+newEmptyTokenStore _ = atomically $
   newTVar (Left (toException (TokenNotFound "")))
