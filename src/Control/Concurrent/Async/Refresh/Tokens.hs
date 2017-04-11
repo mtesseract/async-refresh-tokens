@@ -7,6 +7,19 @@
 {-# LANGUAGE PolyKinds                 #-}
 {-# LANGUAGE ScopedTypeVariables       #-}
 
+{-|
+Module      : Control.Concurrent.Async.Refresh.Tokens
+Description : This module exposes the API of the async-refresh-tokens package.
+Copyright   : (c) Moritz Schulte, 2017
+License     : BSD3
+Maintainer  : mtesseract@silverratio.net
+Stability   : experimental
+Portability : POSIX
+
+The async-refresh-tokens package is built on top of the async-refresh
+package and provides the core logic for renewal of expiring access
+tokens according to user-provided actions.
+-}
 
 module Control.Concurrent.Async.Refresh.Tokens
   ( IsToken(..)
@@ -24,15 +37,14 @@ module Control.Concurrent.Async.Refresh.Tokens
   , tokenConfAddRequest
   ) where
 
-import           ClassyPrelude
-import           Control.Concurrent.Async.Lifted.Safe           (waitAny)
+import           Control.Concurrent.Async.Refresh.Tokens.Prelude
+
+import           Control.Concurrent.Async.Lifted.Safe            (cancel, waitAny)
 import           Control.Concurrent.Async.Refresh
 import           Control.Concurrent.Async.Refresh.Tokens.Conf
-import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses as Lens
+import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses  as Lens
 import           Control.Concurrent.Async.Refresh.Tokens.Types
 import           Control.Lens
-import           Control.Monad.Logger
-import           Formatting
 
 -- | Start a new token refresher for the provided configuration.
 -- Returns a 'TokenRefresher' handle representing the running token

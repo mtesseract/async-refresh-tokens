@@ -3,9 +3,17 @@
 {-# LANGUAGE MultiParamTypeClasses  #-}
 {-# LANGUAGE TemplateHaskell        #-}
 
-module Control.Concurrent.Async.Refresh.Tokens.Lenses where
+{-|
+Module      : Control.Concurrent.Async.Refresh.Tokens.Lenses
+Description : This module defines lenses used within the async-refresh-tokens package.
+Copyright   : (c) Moritz Schulte, 2017
+License     : BSD3
+Maintainer  : mtesseract@silverratio.net
+Stability   : experimental
+Portability : POSIX
+-}
 
--- This module defines lenses used within this package.
+module Control.Concurrent.Async.Refresh.Tokens.Lenses where
 
 import           Control.Lens
 import           Control.Concurrent.Async.Refresh.Tokens.Types

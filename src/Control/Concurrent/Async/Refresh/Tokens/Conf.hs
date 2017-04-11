@@ -1,3 +1,13 @@
+{-|
+Module      : Control.Concurrent.Async.Refresh.Tokens.Conf
+Description : Configuration related functions for the async-refresh-tokens package.
+Copyright   : (c) Moritz Schulte, 2017
+License     : BSD3
+Maintainer  : mtesseract@silverratio.net
+Stability   : experimental
+Portability : POSIX
+-}
+
 module Control.Concurrent.Async.Refresh.Tokens.Conf
   ( TokenConf
   , defaultTokenConf
@@ -5,8 +15,9 @@ module Control.Concurrent.Async.Refresh.Tokens.Conf
   , tokenConfAddRequest
   ) where
 
-import           ClassyPrelude
-import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses as Lens
+import           Control.Concurrent.Async.Refresh.Tokens.Prelude
+
+import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses  as Lens
 import           Control.Concurrent.Async.Refresh.Tokens.Types
 import           Control.Lens
 
@@ -14,7 +25,7 @@ import           Control.Lens
 defaultTokenConf :: TokenConf m
 defaultTokenConf =
   TokenConf { _tokenConfRefreshFactor = defaultRefreshTimeFactor
-            , _tokenConfRequests      = empty }
+            , _tokenConfRequests      = [] }
 
 -- | By default, we start refreshing tokens after 80% of the
 -- "expires_in" time of a token has been elapsed.
