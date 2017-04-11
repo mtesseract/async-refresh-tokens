@@ -1,7 +1,6 @@
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE PolyKinds           #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 
 module Main where
 
@@ -18,10 +17,6 @@ data TestTokens = TokenFoo | TokenBar
 
 instance IsToken 'TokenFoo where
   tokenScopes _ = ["foo.read"]
-
-data Exn = NotFound deriving (Show, Typeable)
-
-instance Exception Exn
 
 oneTimeRefresh :: IO ()
 oneTimeRefresh = runStderrLoggingT $ do
