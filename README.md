@@ -1,13 +1,11 @@
-# async-refresh-tokens
+# async-refresh-tokens [![Hackage version](https://img.shields.io/hackage/v/async-refresh-tokens.svg?label=Hackage)](https://hackage.haskell.org/package/async-refresh-tokens) [![Stackage version](https://www.stackage.org/package/async-refresh-tokens/badge/lts?label=Stackage)](https://www.stackage.org/package/async-refresh-tokens) [![Build Status](https://travis-ci.org/mtesseract/async-refresh-tokens.svg?branch=master)](https://travis-ci.org/mtesseract/async-refresh-tokens)
 
-About
-=====
+### About
 
 This is Haskell library built on top of the async-refresh package
 implementing the logic for refreshing of expiring access tokens.
 
-Usage
-=====
+### Usage
 
 - Create new token types. Using the `DataKinds` extension we can do
   this via `data MyAppTokens = TokenFoo | TokenBar`.
@@ -29,8 +27,7 @@ Usage
 - Use `newTokenRefresher` to initiate token refreshing for each
   registered token refreshing request.
 
-Example
-=======
+### Example
 
 ```
 {-# LANGUAGE DataKinds           #-}
