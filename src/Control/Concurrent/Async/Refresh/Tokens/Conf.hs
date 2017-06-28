@@ -19,7 +19,7 @@ import           Control.Concurrent.Async.Refresh.Tokens.Prelude
 
 import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses  as Lens
 import           Control.Concurrent.Async.Refresh.Tokens.Types
-import           Control.Lens
+import           Lens.Micro
 
 -- | Produce default token configuration.
 defaultTokenConf :: TokenConf m

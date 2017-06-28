@@ -1,5 +1,5 @@
 name:                async-refresh-tokens
-version:             0.1.0.1
+version:             0.2.0.1
 synopsis:            Package implementing core logic for refreshing of expiring access tokens
 description:         This package can be used for renewal of expiring access tokens
                      according to user-provided actions. Tokens will be stored in a
@@ -23,11 +23,12 @@ library
                      , Control.Concurrent.Async.Refresh.Tokens.Prelude
                      , Control.Concurrent.Async.Refresh.Tokens.Conf
   build-depends:       base >= 4.7 && < 5
-                     , async-refresh
+                     , async-refresh >= 0.2.0.2
                      , monad-logger
                      , lifted-async
                      , stm
-                     , lens
+                     , microlens >= 0.4
+                     , microlens-th >= 0.4
                      , text
                      , monad-control
                      , safe-exceptions
