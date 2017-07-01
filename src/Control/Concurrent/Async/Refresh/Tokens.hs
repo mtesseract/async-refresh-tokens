@@ -44,7 +44,7 @@ import           Control.Concurrent.Async.Refresh
 import           Control.Concurrent.Async.Refresh.Tokens.Conf
 import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses  as Lens
 import           Control.Concurrent.Async.Refresh.Tokens.Types
-import           Control.Lens
+import           Lens.Micro
 
 -- | Start a new token refresher for the provided configuration.
 -- Returns a 'TokenRefresher' handle representing the running token
