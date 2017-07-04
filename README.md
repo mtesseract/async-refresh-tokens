@@ -7,16 +7,15 @@ implementing the logic for refreshing of expiring access tokens.
 
 ### Usage
 
-- Create new token types. Using the `DataKinds` extension we can do
-  this via `data MyAppTokens = TokenFoo | TokenBar`.
+- Create new token types.
 
 - Make the tokens be instances of the `IsToken` type classes by
   defining the `tokenScopes` method and (optionally) `tokenName` (a
   human readable label for this token).
 
-- Create new token stores (which are basically `TVar's containing the
-  tokens wrapped in `Either SomeException`) using
-  `newEmptyTokenStore`.
+- Use `newEmptyTokenStore` to create a new token stores (token stores
+  are basically `TVar`s containing the tokens wrapped in `Either
+  SomeException`).
 
 - Create a new configuration by adjusting `defaultTokenConf` using the
   functions `tokenConfAddRequest` and `tokenConfSetFactor`. The
@@ -27,21 +26,23 @@ implementing the logic for refreshing of expiring access tokens.
 - Use `newTokenRefresher` to initiate token refreshing for each
   registered token refreshing request.
 
+- To use the current token, extract it from the `TVar` using
+  `readTVar` (and pattern matching on `Right`).
+
 ### Example
 
 ```
-{-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE PolyKinds           #-}
 
-data MyAppTokens = TokenFoo | TokenBar
+data TokenFoo
 
-instance IsToken 'TokenFoo where
+instance IsToken TokenFoo where
   tokenScopes _ = ["foo.read", "foo.write"]
 
-createTokenStoreFoo :: IO (TokenStore 'TokenFoo)
+createTokenStoreFoo :: IO (TokenStore TokenFoo)
 createTokenStoreFoo = runStderrLoggingT $ do
-  tokenFoo <- newEmptyTokenStore (Proxy :: Proxy 'TokenFoo)
+  tokenFoo <- newEmptyTokenStore (Proxy :: Proxy TokenFoo)
   let conf = defaultTokenConf
              & tokenConfAddRequest (RequestToken tokenFoo actionFoo)
   _ <- newTokenRefresher conf
