@@ -33,15 +33,14 @@ implementing the logic for refreshing of expiring access tokens.
 
 ```
 {-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE PolyKinds           #-}
 
 data TokenFoo
 
 instance IsToken TokenFoo where
   tokenScopes _ = ["foo.read", "foo.write"]
 
-createTokenStoreFoo :: IO (TokenStore TokenFoo)
-createTokenStoreFoo = runStderrLoggingT $ do
+createTokenStoreFoo :: LoggingT IO (TokenStore TokenFoo)
+createTokenStoreFoo = do
   tokenFoo <- newEmptyTokenStore (Proxy :: Proxy TokenFoo)
   let conf = defaultTokenConf
              & tokenConfAddRequest (RequestToken tokenFoo actionFoo)
