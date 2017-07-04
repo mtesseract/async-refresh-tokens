@@ -1,6 +1,4 @@
-{-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PolyKinds         #-}
 
 module Main where
 
@@ -16,24 +14,29 @@ import           Test.Framework                          (defaultMain,
 import           Test.Framework.Providers.HUnit          (testCase)
 import           Test.HUnit                              ((@?=))
 
-data TestTokens = TokenFoo | TokenBar
+data TokenFoo
 
-instance IsToken 'TokenFoo where
-  tokenScopes _ = ["foo.read"]
+instance IsToken TokenFoo where
+  tokenScopes _ = ["foo.read", "foo.write"]
 
-oneTimeRefresh :: IO ()
-oneTimeRefresh = runStderrLoggingT $ do
-  tokenFoo <- newEmptyTokenStore (Proxy :: Proxy 'TokenFoo)
+createTokenStoreFoo :: LoggingT IO (TokenStore TokenFoo)
+createTokenStoreFoo = do
+  tokenFoo <- newEmptyTokenStore (Proxy :: Proxy TokenFoo)
   let conf = defaultTokenConf
              & tokenConfAddRequest (RequestToken tokenFoo actionFoo)
   _ <- newTokenRefresher conf
-  liftIO $ threadDelay (10 ^ 6 + 10 ^ 5)
-  (Right token) <- liftIO . atomically $ readTVar tokenFoo
-  liftIO $ token @?= Token "foo"
+  return tokenFoo
 
   where actionFoo :: (MonadIO m, IsToken t) => m (RefreshResult (Token t))
         actionFoo =
-          return $ RefreshResult (Token "foo") Nothing
+          return $ RefreshResult (Token "secret-foo-token") Nothing
+
+oneTimeRefresh :: IO ()
+oneTimeRefresh = runStderrLoggingT $ do
+  tokenFoo <- createTokenStoreFoo
+  liftIO $ threadDelay (10 ^ 6 + 10 ^ 5)
+  (Right token) <- liftIO . atomically $ readTVar tokenFoo
+  liftIO $ token @?= Token "secret-foo-token"
 
 main :: IO ()
 main = do
