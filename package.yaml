@@ -1,0 +1,54 @@
+name: async-refresh-tokens
+version: '0.3.0.0'
+synopsis: Package implementing core logic for refreshing of expiring access tokens
+description: ! 'This package can be used for renewal of expiring access tokens
+  according to user-provided actions. Tokens will be stored in a transactional
+  variable (TVar).'
+category: Control
+author: Moritz Schulte
+maintainer: mtesseract@silverratio.net
+copyright: (c) 2017 Moritz Schulte
+license: BSD3
+github: mtesseract/async-refresh-tokens
+extra-source-files:
+- README.md
+default-extensions:
+- OverloadedStrings
+dependencies:
+- monad-logger
+- stm
+library:
+  source-dirs: src
+  default-extensions:
+  - NoImplicitPrelude
+  ghc-options: -Wall
+  exposed-modules:
+  - Control.Concurrent.Async.Refresh.Tokens
+  dependencies:
+  - base >=4.7 && <5
+  - async-refresh >=0.2.0.2
+  - lifted-async
+  - microlens >=0.4
+  - microlens-th >=0.4
+  - text
+  - monad-control
+  - safe-exceptions
+  - bytestring
+  - formatting
+tests:
+  async-refresh-tokens-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    - -fno-warn-type-defaults
+    dependencies:
+    - base
+    - async-refresh-tokens
+    - HUnit
+    - test-framework
+    - test-framework-hunit
+    - criterion

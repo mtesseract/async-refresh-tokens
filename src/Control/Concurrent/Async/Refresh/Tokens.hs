@@ -39,7 +39,8 @@ module Control.Concurrent.Async.Refresh.Tokens
 
 import           Control.Concurrent.Async.Refresh.Tokens.Prelude
 
-import           Control.Concurrent.Async.Lifted.Safe            (cancel, waitAny)
+import           Control.Concurrent.Async.Lifted.Safe            (cancel,
+                                                                  waitAny)
 import           Control.Concurrent.Async.Refresh
 import           Control.Concurrent.Async.Refresh.Tokens.Conf
 import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses  as Lens
@@ -98,6 +99,6 @@ tokenStoreCallback store res@(Right t) = do
 
 -- | Create a new empty token store for the provided token type.
 newEmptyTokenStore :: (MonadIO m, IsToken t)
-                   => proxy t -> m (TVar (Either SomeException (Token t)))
-newEmptyTokenStore _ = atomically $
+                   => m (TVar (Either SomeException (Token t)))
+newEmptyTokenStore = atomically $
   newTVar (Left (toException (TokenNotFound "")))
