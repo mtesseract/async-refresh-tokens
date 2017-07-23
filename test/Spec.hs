@@ -21,7 +21,7 @@ instance IsToken TokenFoo where
 
 createTokenStoreFoo :: LoggingT IO (TokenStore TokenFoo)
 createTokenStoreFoo = do
-  tokenFoo <- newEmptyTokenStore (Proxy :: Proxy TokenFoo)
+  tokenFoo <- newEmptyTokenStore
   let conf = defaultTokenConf
              & tokenConfAddRequest (RequestToken tokenFoo actionFoo)
   _ <- newTokenRefresher conf
