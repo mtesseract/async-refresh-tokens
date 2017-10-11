@@ -1,5 +1,5 @@
 name: async-refresh-tokens
-version: '0.3.0.0'
+version: '0.3.0.1'
 synopsis: Package implementing core logic for refreshing of expiring access tokens
 description: ! 'This package can be used for renewal of expiring access tokens
   according to user-provided actions. Tokens will be stored in a transactional

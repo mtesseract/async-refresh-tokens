@@ -94,8 +94,15 @@ tokenStoreCallback :: forall m t.
 tokenStoreCallback _ (Left exn) =
   logErrorN $ sformat ("Token refresh action failed: " % stext) (tshow exn)
 tokenStoreCallback store res@(Right t) = do
-  logDebugN $ sformat ("Token refresh action succeeded: " % stext) (tshow t)
+  logDebugN $
+    sformat ("Token refresh action succeeded: " % stext) (tshow (maskRefreshResult t))
   atomically $ writeTVar store (refreshResult <$> res)
+
+maskRefreshResult :: RefreshResult (Token t) -> RefreshResult (Token t)
+maskRefreshResult res = res { refreshResult = maskedToken }
+
+maskedToken :: Token t
+maskedToken = Token { unToken = "XXXXXXXXXXXXXXXX" }
 
 -- | Create a new empty token store for the provided token type.
 newEmptyTokenStore :: (MonadIO m, IsToken t)
