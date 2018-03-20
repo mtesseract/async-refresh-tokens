@@ -1,16 +1,7 @@
-{-# LANGUAGE DataKinds                 #-}
-{-# LANGUAGE ExistentialQuantification #-}
-{-# LANGUAGE FlexibleContexts          #-}
-{-# LANGUAGE MultiParamTypeClasses     #-}
-{-# LANGUAGE NoImplicitPrelude         #-}
-{-# LANGUAGE OverloadedStrings         #-}
-{-# LANGUAGE PolyKinds                 #-}
-{-# LANGUAGE ScopedTypeVariables       #-}
-
 {-|
 Module      : Control.Concurrent.Async.Refresh.Tokens
 Description : This module exposes the API of the async-refresh-tokens package.
-Copyright   : (c) Moritz Schulte, 2017
+Copyright   : (c) Moritz Clasmeier, 2017-2018
 License     : BSD3
 Maintainer  : mtesseract@silverratio.net
 Stability   : experimental
@@ -20,6 +11,15 @@ The async-refresh-tokens package is built on top of the async-refresh
 package and provides the core logic for renewal of expiring access
 tokens according to user-provided actions.
 -}
+
+{-# LANGUAGE DataKinds                 #-}
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE FlexibleContexts          #-}
+{-# LANGUAGE MultiParamTypeClasses     #-}
+{-# LANGUAGE NoImplicitPrelude         #-}
+{-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE PolyKinds                 #-}
+{-# LANGUAGE ScopedTypeVariables       #-}
 
 module Control.Concurrent.Async.Refresh.Tokens
   ( IsToken(..)
@@ -39,23 +39,22 @@ module Control.Concurrent.Async.Refresh.Tokens
 
 import           Control.Concurrent.Async.Refresh.Tokens.Prelude
 
-import           Control.Concurrent.Async.Lifted.Safe            (cancel,
-                                                                  waitAny)
 import           Control.Concurrent.Async.Refresh
 import           Control.Concurrent.Async.Refresh.Tokens.Conf
 import qualified Control.Concurrent.Async.Refresh.Tokens.Lenses  as Lens
 import           Control.Concurrent.Async.Refresh.Tokens.Types
+import           Control.Monad.IO.Unlift
 import           Lens.Micro
+import           UnliftIO.Async
+import           UnliftIO.STM
 
 -- | Start a new token refresher for the provided configuration.
 -- Returns a 'TokenRefresher' handle representing the running token
 -- refresher.
 newTokenRefresher :: forall m.
-                     ( MonadIO m
-                     , MonadBaseControl IO m
+                     ( MonadUnliftIO m
                      , MonadMask m
-                     , MonadLogger m
-                     , Forall (Pure m) )
+                     , MonadLogger m )
                   => TokenConf m -> m TokenRefresher
 newTokenRefresher conf = do
   asyncHandle <- async $
@@ -70,11 +69,9 @@ newTokenRefresher conf = do
 
 -- | Spawn an async refresher for the provided token.
 spawnSingleTokenRefresher :: forall m.
-                             ( MonadIO m
-                             , MonadBaseControl IO m
+                             ( MonadUnliftIO m
                              , MonadMask m
-                             , MonadLogger m
-                             , Forall (Pure m) )
+                             , MonadLogger m )
                           => RequestToken m -> m (Async ())
 spawnSingleTokenRefresher (RequestToken store action) = do
   let conf = newAsyncRefreshConf action

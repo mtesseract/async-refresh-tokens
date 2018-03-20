@@ -1,7 +1,7 @@
 {-|
 Module      : Control.Concurrent.Async.Refresh.Tokens.Prelude
 Description : Prelude for the async-refresh-tokens package.
-Copyright   : (c) Moritz Schulte, 2017
+Copyright   : (c) Moritz Clasmeier, 2017-2018
 License     : BSD3
 Maintainer  : mtesseract@silverratio.net
 Stability   : experimental
@@ -13,41 +13,26 @@ module Control.Concurrent.Async.Refresh.Tokens.Prelude
   , module Control.Exception.Safe
   , module Formatting
   , module Control.Monad.Logger
-  , atomically
-  , Control.Concurrent.STM.TVar
-  , Control.Concurrent.STM.readTVar
-  , Control.Concurrent.STM.writeTVar
-  , Control.Concurrent.STM.newTVar
-  , Control.Concurrent.STM.newTVarIO
   , Text
   , ByteString
   , fromMaybe
-  , Async, Forall, Pure, withAsync, async
-  , threadDelay
   , forever, void
   , MonadIO
-  , MonadBaseControl
   , undefined
   , tshow
   ) where
 
-import qualified Control.Concurrent
-import           Control.Concurrent.Async.Lifted.Safe
-import           Control.Concurrent.STM               (STM)
-import qualified Control.Concurrent.STM
 import           Control.Exception.Safe
 import           Control.Monad
 import           Control.Monad.IO.Class
 import           Control.Monad.Logger
-import           Control.Monad.Trans.Control
-import           Data.ByteString                      (ByteString)
-import           Data.Maybe                           (fromMaybe)
-import           Data.Text                            (Text)
+import           Data.ByteString        (ByteString)
+import           Data.Maybe             (fromMaybe)
+import           Data.Text              (Text)
 import qualified Data.Text
 import           Formatting
-import           Prelude                              hiding (head, tail,
-                                                       undefined)
-import qualified Prelude                              as Prelude
+import           Prelude                hiding (head, tail, undefined)
+import qualified Prelude                as Prelude
 
 -- | Version of 'undefined' with a deprecated pragma.
 undefined :: a
@@ -58,10 +43,3 @@ undefined = Prelude.undefined
 -- 'String'.
 tshow :: Show a => a -> Text
 tshow = Data.Text.pack . show
-
--- | Generalization of 'Control.Concurrent.threadDelay'.
-threadDelay :: MonadIO m => Int -> m ()
-threadDelay = liftIO . Control.Concurrent.threadDelay
-
-atomically :: MonadIO m => STM a -> m a
-atomically = liftIO . Control.Concurrent.STM.atomically

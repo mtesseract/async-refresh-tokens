@@ -2,17 +2,16 @@
 
 module Main where
 
-import           Control.Concurrent                      (threadDelay)
 import           Control.Concurrent.Async.Refresh.Tokens
-import           Control.Concurrent.STM
 import           Control.Monad.IO.Class
 import           Control.Monad.Logger
 import           Data.Function                           ((&))
-import           Data.Proxy
 import           Test.Framework                          (defaultMain,
                                                           testGroup)
 import           Test.Framework.Providers.HUnit          (testCase)
 import           Test.HUnit                              ((@?=))
+import           UnliftIO.Concurrent
+import           UnliftIO.STM
 
 data TokenFoo
 

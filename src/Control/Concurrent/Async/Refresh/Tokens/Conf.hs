@@ -1,7 +1,7 @@
 {-|
 Module      : Control.Concurrent.Async.Refresh.Tokens.Conf
 Description : Configuration related functions for the async-refresh-tokens package.
-Copyright   : (c) Moritz Schulte, 2017
+Copyright   : (c) Moritz Clasmeier, 2017-2018
 License     : BSD3
 Maintainer  : mtesseract@silverratio.net
 Stability   : experimental
