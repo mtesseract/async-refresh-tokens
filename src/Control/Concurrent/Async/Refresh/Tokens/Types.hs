@@ -1,3 +1,13 @@
+{-|
+Module      : Control.Concurrent.Async.Refresh.Tokens.Lenses
+Description : This module defines the types used within the async-refresh-tokens package.
+Copyright   : (c) Moritz Clasmeier, 2017-2018
+License     : BSD3
+Maintainer  : mtesseract@silverratio.net
+Stability   : experimental
+Portability : POSIX
+-}
+
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE KindSignatures            #-}
 {-# LANGUAGE OverloadedLists           #-}
@@ -5,22 +15,14 @@
 {-# LANGUAGE Rank2Types                #-}
 {-# LANGUAGE TypeFamilies              #-}
 
-{-|
-Module      : Control.Concurrent.Async.Refresh.Tokens.Lenses
-Description : This module defines the types used within the async-refresh-tokens package.
-Copyright   : (c) Moritz Schulte, 2017
-License     : BSD3
-Maintainer  : mtesseract@silverratio.net
-Stability   : experimental
-Portability : POSIX
--}
-
 module Control.Concurrent.Async.Refresh.Tokens.Types where
 
 import           Control.Concurrent.Async.Refresh.Tokens.Prelude
 
 import           Control.Concurrent.Async.Refresh
 import           Data.Proxy
+import           UnliftIO.Async
+import           UnliftIO.STM
 
 -- | Exceptions specific to this package.
 data TokenException = TokenNotFound Text
